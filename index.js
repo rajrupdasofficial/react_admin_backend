@@ -2,8 +2,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const userRoutes = require('./usersetup/userRoutes');
-const loginRoutes = require('./login/loginRoutes')
+const userRoutes = require('./agentroutes/agentroutes');
+const loginRoutes = require('./loginroutes/loginRoutes')
 
 const app = express();
 
@@ -15,6 +15,7 @@ app.use(cors({
 
 // user information gateway
 app.use('/api/users', userRoutes);
+
 // user login gateway
 app.use('/login',loginRoutes);
 
