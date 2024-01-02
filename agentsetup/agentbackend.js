@@ -8,6 +8,7 @@ const userService = {
     const userData = req.body;
     // console.log(userData);
     const octaid = generateCustomId();
+    // console.log(octaid)
   
     const roles = 'Agent'
 
@@ -37,7 +38,7 @@ const userService = {
   },
   deleteUser: (req, res) => {
     const userId = req.body.octaid;
-    console.log("user id",userId)
+    // console.log("user id",userId)
 
     connection.query(
       'DELETE FROM users WHERE octaid = ?',

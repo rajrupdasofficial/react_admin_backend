@@ -3,9 +3,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const userRoutes = require('./agentroutes/agentroutes');
-const loginRoutes = require('./loginroutes/loginRoutes')
+const loginRoutes = require('./loginroutes/loginRoutes');
+const vendorRoutes =  require('./vendorroutes/vendorroutes');
 
 const app = express();
+app.use(express.json({ limit: '100mb' })); // Set maximum payload size for JSON
+app.use(express.urlencoded({ limit: '100mb', extended: true })); // Set maximum payload size for form data
+
 
 app.use(bodyParser.json());
 app.use(cors({
@@ -18,6 +22,10 @@ app.use('/api/users', userRoutes);
 
 // user login gateway
 app.use('/login',loginRoutes);
+
+// vendor api gateway
+
+app.use('/api/vendor',vendorRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
