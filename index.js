@@ -2,7 +2,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const userRoutes = require('./userRoutes');
+const userRoutes = require('./usersetup/userRoutes');
+const loginRoutes = require('./login/loginRoutes')
 
 const app = express();
 
@@ -12,7 +13,10 @@ app.use(cors({
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 }));
 
+// user information gateway
 app.use('/api/users', userRoutes);
+// user login gateway
+app.use('/login',loginRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

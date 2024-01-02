@@ -1,5 +1,5 @@
 // userService.js
-const connection = require('./dbconn');
+const connection = require('../database/dbconn');
 
 const userService = {
   createUser: (req, res) => {
