@@ -7,9 +7,6 @@ const loginRoutes = require('./loginroutes/loginRoutes');
 const vendorRoutes =  require('./vendorroutes/vendorroutes');
 
 const app = express();
-app.use(express.json({ limit: '100mb' })); // Set maximum payload size for JSON
-app.use(express.urlencoded({ limit: '100mb', extended: true })); // Set maximum payload size for form data
-
 
 app.use(bodyParser.json());
 app.use(cors({
