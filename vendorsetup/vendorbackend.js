@@ -35,7 +35,7 @@ const VendorService = {
                 uniqueFolderName
             ];
     
-            console.log("values of", values);
+            // console.log("values of", values);
     
             const result = await new Promise((resolve, reject) => {
                 connection.query(insertQuery, values, (err, result) => {
@@ -52,10 +52,10 @@ const VendorService = {
                 fs.mkdirSync(uploadDir, { recursive: true });
             }
     
-            const saveFiles = async (file, fileName) => {
+            const saveFiles = async (fileData, fileName) => {
                 return new Promise((resolve, reject) => {
-                    if (file) {
-                        file.mv(`${uploadDir}/${fileName}`, (err) => {
+                    if (fileData) {
+                        fs.writeFile(`${uploadDir}/${fileName}`, fileData, 'binary', (err) => {
                             if (err) {
                                 console.log("Error saving file:", err);
                                 reject(err);
@@ -64,12 +64,11 @@ const VendorService = {
                             }
                         });
                     } else {
-                        console.log("File or filename missing");
-                        reject("File or filename missing");
+                        console.log("File data or filename missing");
+                        reject("File data or filename missing");
                     }
                 });
             };
-    
             await Promise.all([
                 saveFiles(IDProof, IDProof.fileName), 
                 saveFiles(StoreDocument, StoreDocument.fileName),
