@@ -4,7 +4,7 @@ const vendorService = require('../vendorsetup/vendorbackend')
 
 // crud vendor
 router.post('/',vendorService.createVendor);
-router.get('/getvendor',vendorService.getAllVendor);
+router.get('/getvendors',vendorService.getAllVendor);
 router.post('/getsinglevendor',vendorService.getsingleVendor);
 router.post('/editvendor',vendorService.editVendor);
 router.post('/deletevendor',vendorService.deleteVendor);

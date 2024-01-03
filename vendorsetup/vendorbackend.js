@@ -55,7 +55,7 @@ const VendorService = {
             const saveFiles = async (fileData) => {
                 return new Promise((resolve, reject) => {
                     if (fileData) {
-                        fs.writeFile(`${uploadDir}/${fileData}`, fileData, {flag: 'ax'},(err) => {
+                        fs.writeFile(`${uploadDir}/${fileData}`, fileData, {flag: 'w'},(err) => {
                             if (err) {
                                 console.log("Error saving file:", err);
                                 reject(err);
@@ -87,44 +87,29 @@ const VendorService = {
         const selectQuery = `
             SELECT * FROM vendor
         `;
-
+        
         connection.query(selectQuery, (err, rows) => {
             if (err) {
                 console.error("Error fetching vendors:", err);
                 return res.status(500).json({ error: "Failed to fetch vendors" });
             }
-
-            const vendorsWithFiles = rows.map((vendor) => {
-                const uploadDir = path.join(__dirname, `../uploads/${vendor.folderid}/`);
-
-                const vendorFiles = {
-                    IDProof: path.join(uploadDir, vendor.IDProof),
-                    StoreDocument: path.join(uploadDir, vendor.StoreDocument),
-                    StorePhoto: path.join(uploadDir, vendor.StorePhoto)
-                };
-
-                return {
-                    ...vendor,
-                    ...vendorFiles
-                };
-            });
-
+            
             console.log("Fetched all vendors successfully");
-            return res.status(200).json({ vendors: vendorsWithFiles });
+            return res.status(200).json({ vendors: rows }); // Sending fetched vendors as response
         });
     },
     getsingleVendor:(req,res)=>{
         const getSingleVendorData = req.body;
-        const folderid = getSingleVendorData.folderid;
+        const id = getSingleVendorData.id;
     
         // Construct the query to fetch a single vendor based on folderid
         const selectQuery = `
             SELECT *
             FROM vendor
-            WHERE folderid = ?
+            WHERE id = ?
         `;
     
-        connection.query(selectQuery, [folderid], (err, rows) => {
+        connection.query(selectQuery, [id], (err, rows) => {
             if (err) {
                 console.error("Error fetching single vendor:", err);
                 return res.status(500).json({ error: "Failed to fetch vendor" });
@@ -143,7 +128,7 @@ const VendorService = {
     },
     editVendor: (req, res) => {
         const editvendorData = req.body;
-        const folderid = editvendorData.folderid;
+        const id = editvendorData.id;
     
         // Extract the fields to be updated from vendorData
         const {
@@ -179,7 +164,7 @@ const VendorService = {
                 roles = ?,
                 vstatus = ?,
                 vcomment = ?
-            WHERE folderid = ?
+            WHERE id = ?
         `;
     
         const values = [
@@ -196,7 +181,7 @@ const VendorService = {
             roles,
             vstatus,
             vcomment,
-            folderid
+            id
         ];
     
         // Now you can execute the query using your database connection
@@ -212,16 +197,16 @@ const VendorService = {
     },
     deleteVendor:(req,res)=>{
         const deleteVendorData = req.body;
-        const folderid = deleteVendorData.folderid;
+        const id = deleteVendorData.id;
     
         // Construct the query to fetch a delete vendor based on folderid
         const deleteQuery = `
         DELETE FROM vendor
-        WHERE folderid = ?
+        WHERE id = ?
     `;
 
     
-        connection.query(deleteQuery, [folderid], (err, rows) => {
+        connection.query(deleteQuery, [id], (err, rows) => {
             if (err) {
                 console.error("Error fetching single vendor:", err);
                 return res.status(500).json({ error: "Failed to fetch vendor" });
@@ -233,7 +218,7 @@ const VendorService = {
             }
     
             // Vendor information found
-            console.log("Deleted Vendor successfully");
+            console.log(" Vendor deleted successfully");
             return res.status(200).json({ vendor: rows[0] });
         });
 
