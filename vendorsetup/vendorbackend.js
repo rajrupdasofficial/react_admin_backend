@@ -52,10 +52,10 @@ const VendorService = {
                 fs.mkdirSync(uploadDir, { recursive: true });
             }
     
-            const saveFiles = async (fileData, fileName) => {
+            const saveFiles = async (fileData) => {
                 return new Promise((resolve, reject) => {
                     if (fileData) {
-                        fs.writeFile(`${uploadDir}/${fileName}`, fileData, 'binary', (err) => {
+                        fs.writeFile(`${uploadDir}/${fileData}`, fileData, {flag: 'ax'},(err) => {
                             if (err) {
                                 console.log("Error saving file:", err);
                                 reject(err);
@@ -70,9 +70,9 @@ const VendorService = {
                 });
             };
             await Promise.all([
-                saveFiles(IDProof, IDProof.fileName), 
-                saveFiles(StoreDocument, StoreDocument.fileName),
-                saveFiles(StorePhoto, StorePhoto.fileName) 
+                saveFiles(IDProof), 
+                saveFiles(StoreDocument),
+                saveFiles(StorePhoto) 
             ]);
     
             console.log("Vendor created successfully");
@@ -112,7 +112,132 @@ const VendorService = {
             console.log("Fetched all vendors successfully");
             return res.status(200).json({ vendors: vendorsWithFiles });
         });
-    }
+    },
+    getsingleVendor:(req,res)=>{
+        const getSingleVendorData = req.body;
+        const folderid = getSingleVendorData.folderid;
+    
+        // Construct the query to fetch a single vendor based on folderid
+        const selectQuery = `
+            SELECT *
+            FROM vendor
+            WHERE folderid = ?
+        `;
+    
+        connection.query(selectQuery, [folderid], (err, rows) => {
+            if (err) {
+                console.error("Error fetching single vendor:", err);
+                return res.status(500).json({ error: "Failed to fetch vendor" });
+            }
+    
+            if (rows.length === 0) {
+                // If no vendor found with the given folderid
+                return res.status(404).json({ message: "Vendor not found" });
+            }
+    
+            // Vendor information found
+            console.log("Fetched single vendor successfully");
+            return res.status(200).json({ vendor: rows[0] });
+        });
+
+    },
+    editVendor: (req, res) => {
+        const editvendorData = req.body;
+        const folderid = editvendorData.folderid;
+    
+        // Extract the fields to be updated from vendorData
+        const {
+            VendorName,
+            StoreName,
+            Address,
+            EmailID,
+            PhoneNumber,
+            IDProof,
+            StoreDocument,
+            StorePhoto,
+            LoginID,
+            Password,
+            roles,
+            vstatus,
+            vcomment
+        } = vendorData;
+    
+        // Construct the update query based on the provided fields
+        const editQuery = `
+            UPDATE vendor
+            SET 
+                VendorName = ?,
+                StoreName = ?,
+                Address = ?,
+                EmailID = ?,
+                PhoneNumber = ?,
+                IDProof = ?,
+                StoreDocument = ?,
+                StorePhoto = ?,
+                LoginID = ?,
+                Password = ?,
+                roles = ?,
+                vstatus = ?,
+                vcomment = ?
+            WHERE folderid = ?
+        `;
+    
+        const values = [
+            VendorName,
+            StoreName,
+            Address,
+            EmailID,
+            PhoneNumber,
+            IDProof,
+            StoreDocument,
+            StorePhoto,
+            LoginID,
+            Password,
+            roles,
+            vstatus,
+            vcomment,
+            folderid
+        ];
+    
+        // Now you can execute the query using your database connection
+        connection.query(editQuery, values, (err, result) => {
+            if (err) {
+                console.error("Error updating vendor:", err);
+                return res.status(500).json({ error: "Failed to update vendor" });
+            }
+    
+            console.log("Vendor updated successfully");
+            return res.status(200).json({ message: "Vendor updated successfully" });
+        });
+    },
+    deleteVendor:(req,res)=>{
+        const deleteVendorData = req.body;
+        const folderid = deleteVendorData.folderid;
+    
+        // Construct the query to fetch a delete vendor based on folderid
+        const deleteQuery = `
+        DELETE FROM vendor
+        WHERE folderid = ?
+    `;
+
+    
+        connection.query(deleteQuery, [folderid], (err, rows) => {
+            if (err) {
+                console.error("Error fetching single vendor:", err);
+                return res.status(500).json({ error: "Failed to fetch vendor" });
+            }
+    
+            if (rows.length === 0) {
+                // If no vendor found with the given folderid
+                return res.status(404).json({ message: "Vendor not found" });
+            }
+    
+            // Vendor information found
+            console.log("Deleted Vendor successfully");
+            return res.status(200).json({ vendor: rows[0] });
+        });
+
+    },
 };
 
 module.exports = VendorService;
