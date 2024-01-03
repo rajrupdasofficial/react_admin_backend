@@ -2,8 +2,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const userRoutes = require('./usersetup/userRoutes');
-const loginRoutes = require('./login/loginRoutes')
+const userRoutes = require('./agentroutes/agentroutes');
+const loginRoutes = require('./loginroutes/loginRoutes');
+const vendorRoutes =  require('./vendorroutes/vendorroutes');
 
 const app = express();
 
@@ -15,8 +16,13 @@ app.use(cors({
 
 // user information gateway
 app.use('/api/users', userRoutes);
+
 // user login gateway
 app.use('/login',loginRoutes);
+
+// vendor api gateway
+
+app.use('/api/vendors',vendorRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
