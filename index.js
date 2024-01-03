@@ -22,7 +22,7 @@ app.use('/login',loginRoutes);
 
 // vendor api gateway
 
-app.use('/api/vendor',vendorRoutes);
+app.use('/api/vendors',vendorRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
